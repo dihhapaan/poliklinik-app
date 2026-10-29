@@ -1,43 +1,103 @@
-@extends('layouts.app')
+<x-layouts.app title="Tambah Jadwal Periksa">
 
-@section('content')
-<div class="p-6 max-w-xl">
-    <h1 class="text-2xl font-bold text-slate-800 mb-6">Tambah Jadwal Periksa</h1>
+    {{-- Header --}}
+    <div class="flex items-center gap-3 mb-6">
+        <a href="{{ route('jadwal-periksa.index') }}"
+            class="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition">
+            <i class="fas fa-arrow-left text-xs"></i>
+        </a>
+        <h2 class="text-xl font-bold text-slate-800">
+            Tambah Jadwal Periksa
+        </h2>
+    </div>
 
-    <form action="{{ route('jadwal-periksa.store') }}" method="POST" class="bg-white rounded-xl shadow p-6 space-y-4">
-        @csrf
+    {{-- Card --}}
+    <div class="card bg-base-100 shadow-md rounded-2xl border border-slate-200">
+        <div class="card-body p-8">
 
-        <div>
-            <label for="hari" class="block text-sm font-medium text-slate-700 mb-1">Hari</label>
-            <select id="hari" name="hari" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
-                <option value="">-- Pilih Hari --</option>
-                @foreach ($hariList as $hari)
-                    <option value="{{ $hari }}" @selected(old('hari') === $hari)>{{ $hari }}</option>
-                @endforeach
-            </select>
-            @error('hari') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+            <form action="{{ route('jadwal-periksa.store') }}" method="POST">
+                @csrf
+
+                {{-- Hari --}}
+                <div class="form-control mb-5">
+                    <label class="label pb-1">
+                        <span class="text-sm font-semibold text-gray-700">
+                            Hari <span class="text-red-500">*</span>
+                        </span>
+                    </label>
+
+                    <select name="hari" id="hari"
+                        class="select select-bordered border-2 px-4 w-full rounded-lg text-sm @error('hari') select-error @enderror"
+                        required>
+                        <option value="">Pilih Hari</option>
+                        @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $day)
+                            <option value="{{ $day }}" {{ old('hari') == $day ? 'selected' : '' }}>
+                                {{ $day }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    @error('hari')
+                    <label class="label pt-1">
+                        <span class="label-text-alt text-red-500">{{ $message }}</span>
+                    </label>
+                    @enderror
+                </div>
+
+                {{-- Jam Mulai --}}
+                <div class="form-control mb-5">
+                    <label class="label pb-1">
+                        <span class="text-sm font-semibold text-gray-700">
+                            Jam Mulai <span class="text-red-500">*</span>
+                        </span>
+                    </label>
+
+                    <input type="time" name="jam_mulai" id="jam_mulai" value="{{ old('jam_mulai') }}"
+                        class="input input-bordered border-2 px-4 w-full rounded-lg text-sm @error('jam_mulai') input-error @enderror"
+                        required>
+
+                    @error('jam_mulai')
+                    <label class="label pt-1">
+                        <span class="label-text-alt text-red-500">{{ $message }}</span>
+                    </label>
+                    @enderror
+                </div>
+
+                {{-- Jam Selesai --}}
+                <div class="form-control mb-6">
+                    <label class="label pb-1">
+                        <span class="text-sm font-semibold text-gray-700">
+                            Jam Selesai <span class="text-red-500">*</span>
+                        </span>
+                    </label>
+
+                    <input type="time" name="jam_selesai" id="jam_selesai" value="{{ old('jam_selesai') }}"
+                        class="input input-bordered border-2 px-4 w-full rounded-lg text-sm @error('jam_selesai') input-error @enderror"
+                        required>
+
+                    @error('jam_selesai')
+                    <label class="label pt-1">
+                        <span class="label-text-alt text-red-500">{{ $message }}</span>
+                    </label>
+                    @enderror
+                </div>
+
+                {{-- Buttons --}}
+                <div class="flex gap-3">
+                    <button type="submit"
+                        class="flex items-center gap-2 px-6 py-2.5 bg-[#2d4499] hover:bg-[#1e2d6b] text-white rounded-lg text-sm font-semibold transition">
+                        <i class="fas fa-save"></i>
+                        Simpan
+                    </button>
+
+                    <a href="{{ route('jadwal-periksa.index') }}"
+                        class="btn btn-ghost bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-lg px-6">
+                        Batal
+                    </a>
+                </div>
+
+            </form>
         </div>
+    </div>
 
-        <div>
-            <label for="jam_mulai" class="block text-sm font-medium text-slate-700 mb-1">Jam Mulai</label>
-            <input type="time" id="jam_mulai" name="jam_mulai" value="{{ old('jam_mulai') }}"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
-            @error('jam_mulai') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-        </div>
-
-        <div>
-            <label for="jam_selesai" class="block text-sm font-medium text-slate-700 mb-1">Jam Selesai</label>
-            <input type="time" id="jam_selesai" name="jam_selesai" value="{{ old('jam_selesai') }}"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
-            @error('jam_selesai') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-        </div>
-
-        <div class="flex gap-2 pt-2">
-            <button type="submit"
-                class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold">Simpan</button>
-            <a href="{{ route('jadwal-periksa.index') }}"
-                class="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-semibold">Batal</a>
-        </div>
-    </form>
-</div>
-@endsection
+</x-layouts.app>

@@ -20,7 +20,7 @@ class JadwalPeriksaController extends Controller
             ->sortBy(fn ($j) => array_search($j->hari, self::HARI))
             ->values();
 
-        return view('dokter.jadwal-periksa.index', compact('jadwals'));
+        return view('dokter.jadwal-periksa.index', ['jadwalPeriksas' => $jadwals]);
     }
 
     public function create()
